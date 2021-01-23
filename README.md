@@ -2,8 +2,9 @@
 OpenComputers robot constructs structures based on schematic file
 
 Instructions: 
-  ```In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
-  
+  In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
+ 
+Use in game:
   Or in Direwolf20 1.12 Minecraft Modpack (or any ~1.12 pack with OpenComputers) 
     Create a OpenCC Robot with basics + Inventory_Controller + Angel_Block upgrade
       Optional include Crescent Hammer Tool + Hover upgrade + Internet Card
