@@ -213,7 +213,7 @@ end
 local tArgs = {...}
 if #tArgs == 0 then
   --print("Usage: NBTbuilder <filename>")
-  build("MedivalStable1")
+  build("../schematics/MedivalStable1")
 elseif #tArgs == 1 then
   build(tArgs[1])
 end
