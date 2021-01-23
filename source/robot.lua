@@ -1,8 +1,8 @@
 local r = {}
 
 r.selectedSlot = 1
-require("virtual_chest")
-require("virtual_robot_inventory")
+require("utils/virtual_chest")
+require("utils/virtual_robot_inventory")
 
 function r.up()
   print("up")

@@ -1,8 +1,8 @@
 local component = {}
-require("virtual_chest")
-require("virtual_robot_inventory")
+require("utils/virtual_chest")
+require("utils/virtual_robot_inventory")
 local r = require("robot")
-require("tools")
+require("utils/tools")
 
 component.computer = {}
 component.robot = {}

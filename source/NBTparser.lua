@@ -1,10 +1,14 @@
-require("class")
-require("tools")
+require("utils/class")
+require("utils/tools")
 
 NBTparser = class()
 
 function NBTparser:_init(filename)
-  local f = assert(io.open(filename, "rb"), "file not found")
+  local f = io.open(filename, "rb"), "file not found"
+  if not f then
+    print(string.format("file %s not found", filename))
+    os.exit()
+  end
   self.index = 1
   self.content = f:read("*a")
   self.data = {}

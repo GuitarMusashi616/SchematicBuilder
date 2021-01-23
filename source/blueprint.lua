@@ -3,9 +3,10 @@
 -- stairs rotate clockwise with wrench by default
 
 require("NBTparser")
-require("tools")
+require("utils/tools")
+require("utils/class")
 
-local legacy_dict = require("legacy_id_dictionary")
+local legacy_dict = require("utils/legacy_id_dictionary")
 -- goal: print out the schematic arrangement of blocks
 -- from gps(0,0,0) find correct block to place - find Palette ID then match that ID with Block
 

@@ -1,16 +1,14 @@
-require("tools")
-require("class")
+require("utils/tools")
+require("utils/class")
 require("gps")
 require("blueprint")
 require("ZigZagIterator")
 require("NBTparser")
 require("inventory")
 
+local legacy_dict = require("utils/legacy_id_dictionary")
 local r = require("robot")
-
-
 local component = require("component")
-local legacy_dict = require("legacy_id_dictionary")
 local inv = component.inventory_controller
 
 NBTbuilder = class()

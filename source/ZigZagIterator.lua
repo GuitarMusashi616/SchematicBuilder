@@ -1,7 +1,7 @@
 --zig zag iterator
 
-require("class")
-require("tools")
+require("utils/class")
+require("utils/tools")
 
 ZigZagIterator = class()
 

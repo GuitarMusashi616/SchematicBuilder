@@ -1,5 +1,5 @@
 local r = require("robot")
-require("class")
+require("utils/class")
 
 GPS = class()
 

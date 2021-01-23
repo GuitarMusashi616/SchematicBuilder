@@ -1,9 +1,9 @@
-require("class")
+require("utils/class")
 require("ZigZagIterator")
-local r = require("robot")
 
+local legacy_dict = require("utils/legacy_id_dictionary")
+local r = require("robot")
 local component = require("component")
-local legacy_dict = require("legacy_id_dictionary")
 local inv = component.inventory_controller
 
 
