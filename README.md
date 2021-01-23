@@ -5,7 +5,7 @@ Instructions:
 - With Lua IDE: Clone Repository and run NBTBuilder.lua in source folder  
 
 Use in game:
- - Or in Direwolf20 1.12 Minecraft Modpack (or any ~1.12 pack with OpenComputers) 
+ - In Direwolf20 1.12 Minecraft Modpack (or any ~1.12 pack with OpenComputers) 
    - Create a OpenCC Robot with basics + Inventory_Controller + Angel_Block upgrade
    - Optional include Crescent Hammer Tool + Hover upgrade + Internet Card
    - In Robot, after installing OpenOS, type in "pastebin run Di9bhf9p" to download all relevant files  
