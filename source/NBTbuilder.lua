@@ -100,9 +100,9 @@ function NBTbuilder:placeDown(block_name)
     --orient compass_heading_order target_heading
     if is_stairs then
       if block_underneath then
-        self:orient({"south_bottom","north_bottom","east_top", "west_top","south_top","north_top","east_bottom","west_bottom"}, metadata["facing"].."_"..metadata["half"])
+        self:orient({"north_bottom","south_bottom","west_top","east_top", "north_top","south_top","west_bottom","east_bottom"}, metadata["facing"].."_"..metadata["half"])
       else
-        self:orient({"south_top","north_top","east_bottom", "west_bottom","south_bottom","north_bottom","east_top","west_top"}, metadata["facing"].."_"..metadata["half"])
+        self:orient({"north_top","south_top","west_bottom","east_bottom","north_bottom", "south_bottom","west_top","east_top"}, metadata["facing"].."_"..metadata["half"])
       end
     elseif is_slab then
       if metadata["type"] == "double" then
@@ -118,7 +118,7 @@ function NBTbuilder:placeDown(block_name)
     elseif is_hay then
       self:orient({"y", "z", "x"}, metadata["axis"])
     elseif is_fence_gate then
-      self:orient({"south", "north", "east", "west"}, metadata["facing"])
+      self:orient({"north", "south", "west", "east" }, metadata["facing"])
     end
   end
 end
