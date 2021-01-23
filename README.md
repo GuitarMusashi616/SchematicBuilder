@@ -2,7 +2,7 @@
 OpenComputers robot constructs structures based on schematic file
 
 Instructions: 
-*In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
+-In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
  
 Use in game:
   Or in Direwolf20 1.12 Minecraft Modpack (or any ~1.12 pack with OpenComputers) 
