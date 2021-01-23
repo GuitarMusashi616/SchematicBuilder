@@ -2,7 +2,7 @@
 OpenComputers robot constructs structures based on schematic file
 
 Instructions: 
-  In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
+  ```In Lua IDE Clone Main Repository and run NBTBuilder.lua in source folder
   
   Or in Direwolf20 1.12 Minecraft Modpack (or any ~1.12 pack with OpenComputers) 
     Create a OpenCC Robot with basics + Inventory_Controller + Angel_Block upgrade
@@ -16,4 +16,4 @@ Instructions:
     
     schematics can also be download from minecraft-schematics.com (or planetminecraft.com or any site with schematics)
       after downloading the file, extract it with 7zip (only works with 7zip), and put the extracted file in the /build/ directory
-      this can be done by uploading the file online and running "wget <url> /build/<filename>" in the robot
+      this can be done by uploading the file online and running "wget <url> /build/<filename>" in the robot```
