@@ -1,5 +1,7 @@
 require("utils/class")
+require("utils/tools")
 require("blueprint")
+require("inventory")
 local classic_id_data_dict = require("utils/classic_id_data_dictionary")
 
 BlueprintClassic = class()
@@ -100,36 +102,41 @@ function BlueprintClassic:iterator()
   end
 end
 
-function BlueprintClassic:create_virtual_supply_chest()
-  local tIngr = self:ingredients()
-  require("inventory")
+function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
+  extraSlots = extraSlots or 0
+  local tIngr = self:legacy_unique_ingredients()
   local length = table.len(tIngr)
-  local v_chest = VirtualInv(length+20)
+  local v_chest = VirtualInv(length+extraSlots)
   for k,v in pairs(tIngr) do
     if k ~= "minecraft:air" then
       v_chest:insert(k,v)
     end
   end
-  print()
+  return v_chest
+end
+
+function BlueprintClassic:create_virtual_supply_chest()
+  local v_chest = self:fill_virtual_inv_with_supplies(20)
   return v_chest:convert_to_openCC_inv()
 end
 
+function BlueprintClassic:create_give_commands()
+  local v_chest = self:fill_virtual_inv_with_supplies()
+  local commands = {}
+  for i,bucket in ipairs(v_chest.buckets) do
+    if bucket.item ~= empty then
+      commands[#commands+1] = "/give @p " .. tostring(bucket.item) .. " " .. tostring(bucket.count)
+    end
+  end
+  return commands
+end
 
 local function main()
-  require("utils/tools")
   local bc = BlueprintClassic("../schematics/medieval-tower")
-  --local iter = bc:iterator()
-  --local ing = bc:ingredients(true)
-  --save_table_as_tabulated_file(ing, "ingredients")
-  local v_chest = bc:create_virtual_supply_chest()
-  local f = io.open("utils/virtual_chest2.lua","w")
-  f:write("virtual_chest = " .. table.tostring(v_chest))
-  f:close()
-  
-  print()
+  local comm = bc:create_give_commands()
+  pt(comm)
 end
 --create(plusOne)
-
 
 --i1 = bc:ingredients()
 --i2 = bc:unique_ingredients()

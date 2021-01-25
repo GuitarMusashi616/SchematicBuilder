@@ -177,18 +177,33 @@ function Blueprint:find_next_occurence(name, iterator)
   end
 end
 
-function Blueprint:create_virtual_supply_chest()
+function Blueprint:fill_virtual_inv_with_supplies(extraSlots)
+  extraSlots = extraSlots or 0
   local tIngr = self:legacy_unique_ingredients()
-  require("inventory")
   local length = table.len(tIngr)
-  local v_chest = VirtualInv(length+20)
+  local v_chest = VirtualInv(length+extraSlots)
   for k,v in pairs(tIngr) do
     if k ~= "minecraft:air" then
       v_chest:insert(k,v)
     end
   end
-  print()
+  return v_chest
+end
+
+function Blueprint:create_virtual_supply_chest()
+  local v_chest = self:fill_virtual_inv_with_supplies(20)
   return v_chest:convert_to_openCC_inv()
+end
+
+function Blueprint:create_give_commands()
+  local v_chest = self:fill_virtual_inv_with_supplies()
+  local commands = {}
+  for i,bucket in ipairs(v_chest.buckets) do
+    if bucket.item ~= empty then
+      commands[#commands+1] = "/give @p " .. tostring(bucket.item) .. " " .. tostring(bucket.count)
+    end
+  end
+  return commands
 end
   
 local function main()

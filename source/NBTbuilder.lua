@@ -290,14 +290,22 @@ end
 local tArgs = {...}
 if #tArgs == 0 then
   print("Usage: NBTbuilder <filename>\t - builds schematic")
-  print("       NBTbuilder -i <filename>\t - lists supplies needed")
+  print("       NBTbuilder -inv <filename>\t - lists supplies needed")
+  print("       NBTbuilder -db <filename>\t - /gives supplies needed")
 elseif #tArgs == 1 then
   main(tArgs[1])
-elseif #tArgs == 2 and tArgs[1] == "-i" then
+elseif #tArgs == 2 and tArgs[1] == "-inv" then
   local builder = NBTbuilder(tArgs[2])
   local ing = builder.blueprint:legacy_unique_ingredients()
   save_table_as_tabulated_file(ing, "supplies")
   os.execute("less supplies")
+elseif #tArgs == 2 and tArgs[1] == "-db" then
+  local builder = NBTbuilder(tArgs[2])
+  local commands = builder.blueprint:create_give_commands()
+  for i,c in pairs(commands) do
+    component.debug.runCommand(c)
+    os.sleep(0.2)
+  end
 end
 
 
