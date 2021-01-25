@@ -178,15 +178,15 @@ function Blueprint:find_next_occurence(name, iterator)
 end
 
 function Blueprint:fill_virtual_inv_with_supplies(extraSlots)
-  BlueprintClassic.fill_virtual_inv_with_supplies(self, extraSlots)
+  return BlueprintClassic.fill_virtual_inv_with_supplies(self, extraSlots)
 end
 
 function Blueprint:create_virtual_supply_chest()
-  BlueprintClassic.create_virtual_supply_chest(self)
+  return BlueprintClassic.create_virtual_supply_chest(self)
 end
 
 function Blueprint:create_give_commands()
-  BlueprintClassic.create_give_commands(self)
+  return BlueprintClassic.create_give_commands(self)
 end
   
 local function main()

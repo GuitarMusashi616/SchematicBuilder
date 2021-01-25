@@ -287,7 +287,6 @@ local function main(filename)
 end
 
 local tArgs = {...}
-tArgs[1] = "../schematics/Modern1"
 
 if #tArgs == 1 then
   main(tArgs[1])
