@@ -29,7 +29,7 @@ component.inventory_controller.suckFromSlot = function(side, slot, count)
     return
   end
   count = count or virtual_chest[slot].size
-  print(string.format("sucking %d %s from slot %s", count, virtual_chest[slot].label, slot) )
+  print(string.format("sucking %d %s from slot %s", count, virtual_chest[slot].name, slot) )
   --WIP have to make this actually work later
 
   local inv_slot = r.find_empty_slot(virtual_robot_inventory)

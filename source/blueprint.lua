@@ -6,7 +6,7 @@ require("NBTparser")
 require("utils/tools")
 require("utils/class")
 
-local legacy_dict = require("utils/legacy_id_dictionary")
+local legacy_dict = require("utils/legacy_string_dictionary")
 -- goal: print out the schematic arrangement of blocks
 -- from gps(0,0,0) find correct block to place - find Palette ID then match that ID with Block
 
@@ -28,20 +28,25 @@ function Blueprint:_init(NBTschematic)
   if not NBTschematic.Palette and NBTschematic.SchematicaMapping then
     NBTschematic.Palette = NBTschematic.SchematicaMapping
   end
-  if not NBTschematic.BlockData and NBTschematic.Blocks then
-    NBTschematic.BlockData = NBTschematic.Blocks
-  end
   for k,v in pairs(assert(NBTschematic.Palette, "Palette does not exist")) do
     assert(self.id_to_data[v] == nil, string.format("id_to_data[%d] already exists, has value %s", v, tostring(k)))
     self.id_to_data[v] = k
   end
 end
 
+function Blueprint.from_filename(filename)
+  local parser = NBTparser(filename)
+  local NBTschematic = parser.data.Schematic
+  if NBTschematic.Palette and NBTschematic.BlockData then
+    return Blueprint(filename)
+  elseif NBTschematic.Blocks and NBTschematic.Data then
+    require("blueprintClassic")
+    return BlueprintClassic(filename)
+  end
+end
+
 function Blueprint:block_id(x,y,z)
   local index = (y*self.length + z)*self.width+x+1
-  if index == 11507 then
-    print()
-  end
   assert(1 <= index and index <= #self.schematic.BlockData, string.format("index %d out of range", index))
   return self.schematic.BlockData[index]
 end
@@ -171,15 +176,29 @@ function Blueprint:find_next_occurence(name, iterator)
     end
   end
 end
+
+function Blueprint:create_virtual_supply_chest()
+  local tIngr = self:legacy_unique_ingredients()
+  require("inventory")
+  local length = table.len(tIngr)
+  local v_chest = VirtualInv(length+20)
+  for k,v in pairs(tIngr) do
+    if k ~= "minecraft:air" then
+      v_chest:insert(k,v)
+    end
+  end
+  print()
+  return v_chest:convert_to_openCC_inv()
+end
   
 local function main()
-  parser = NBTparser("medieval-tower")
-  blueprint = Blueprint(parser.data.Schematic)
+  local parser = NBTparser("Medieval2")
+  local blueprint = Blueprint(parser.data.Schematic)
 end
 
 local function test_load_ingredients()
-  local blueprint = Blueprint("MedivalStable1")
-  print(table.tostring(blueprint:load_ingredients("ingredients")))
+  local blueprint = Blueprint("../schematics/medieval-tower")
+  save_table_as_tabulated_file(blueprint:unique_ingredients(true), "ingredients")
 end
 
 local function test_get_metadata()
@@ -192,3 +211,5 @@ local function test_get_metadata()
   local zzi = ZigZagIterator(blueprint.height,blueprint.length,blueprint.width)
   print(blueprint:find_next_occurence("minecraft:cauldron", zzi))
 end
+
+--test_load_ingredients()

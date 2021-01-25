@@ -1,7 +1,7 @@
 require("utils/class")
 require("ZigZagIterator")
 
-local legacy_dict = require("utils/legacy_id_dictionary")
+local legacy_dict = require("utils/legacy_string_dictionary")
 local r = require("robot")
 local component = require("component")
 local inv = component.inventory_controller
@@ -132,6 +132,23 @@ function VirtualInv:fill_new_slots(item, count)
     end
   end
   return remaining
+end
+
+function VirtualInv:convert_to_openCC_inv()
+  local inv = {}
+  
+  for i,bucket in ipairs(self.buckets) do
+    local name = bucket.item
+    local size = bucket.count
+    local maxSize = bucket.stackLimit
+    if name == "empty" then
+      name = "minecraft:air"
+      size = 0
+    end
+    inv[i] = {name=name, size=size, maxSize=maxSize}
+  end
+  
+  return inv
 end
 
 

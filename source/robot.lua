@@ -34,7 +34,7 @@ end
 
 function r.placeDown()
   if virtual_robot_inventory[r.selectedSlot].size > 0 then
-    print(string.format("placeDown %s", virtual_robot_inventory[r.selectedSlot].label))
+    print(string.format("placeDown %s", virtual_robot_inventory[r.selectedSlot].name))
     virtual_robot_inventory[r.selectedSlot].size = virtual_robot_inventory[r.selectedSlot].size - 1
     if virtual_robot_inventory[r.selectedSlot].size <= 0 then
       virtual_robot_inventory[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
@@ -79,7 +79,7 @@ function r.drop(count)
   --returns true if any of selected slot goes into chest
   local slot = r.find_empty_slot(virtual_chest)
   if slot then
-    virtual_chest[slot] = virtual_robot_inventory[r.selectedSlot]
+    virtual_chest[slot] = table.copy(virtual_robot_inventory[r.selectedSlot])
     virtual_robot_inventory[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
     return true
   else

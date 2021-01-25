@@ -1,3 +1,9 @@
+--build checklist
+--crescent hammer
+--angel upgrade + inv_controller upgrade + hover upgrade
+--facing east
+
+
 local filesystem = require("filesystem")
 local files = {
   "gps",

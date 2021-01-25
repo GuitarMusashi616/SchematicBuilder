@@ -4,7 +4,7 @@ require("utils/tools")
 NBTparser = class()
 
 function NBTparser:_init(filename)
-  local f = io.open(filename, "rb"), "file not found"
+  local f = io.open(filename, "rb")
   if not f then
     print(string.format("file %s not found", filename))
     os.exit()
@@ -168,8 +168,6 @@ function NBTparser:read_list()
 end
 
 local function main()
-  parser = NBTparser("MedivalStable1")
-  parser:start()
-  print(#parser.content)
-  pt(parser.data.Schematic.Palette)
+  local parser = NBTparser("../schematics/medieval-tower")
+  print()
 end

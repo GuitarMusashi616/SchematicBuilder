@@ -2,11 +2,13 @@ require("utils/tools")
 require("utils/class")
 require("gps")
 require("blueprint")
+require("blueprintClassic")
 require("ZigZagIterator")
 require("NBTparser")
 require("inventory")
+require("utils/virtual_chest")
 
-local legacy_dict = require("utils/legacy_id_dictionary")
+local legacy_dict = require("utils/legacy_string_dictionary")
 local r = require("robot")
 local component = require("component")
 local inv = component.inventory_controller
@@ -14,12 +16,13 @@ local inv = component.inventory_controller
 NBTbuilder = class()
 
 function NBTbuilder:_init(filename)
-  self.blueprint = Blueprint(filename)
+  self.blueprint = Blueprint.from_filename(filename)
   self.iter = ZigZagIterator(self.blueprint.height, self.blueprint.length, self.blueprint.width)
   self.gps = GPS(-1,-1,-1)
   self.inventory = Inventory()
   self.legacy_ingredients = self.blueprint:legacy_unique_ingredients()
   self.whitelist = {}
+  self.whitelist_initialized = false
   save_table_as_tabulated_file(self.blueprint:unique_ingredients(true), "ingredients")
   self.state = Refill(self)
 end
@@ -39,6 +42,33 @@ function NBTbuilder:next(whitelistMode)
     end
   end
   return true
+end
+
+function NBTbuilder:iterator(copyIter)
+  local iter = self.iter
+  if copyIter then
+    iter = self.iter:clone()
+  end
+  local function skip_not_whitelisted()
+    for x,y,z in iter() do
+      if self:block_whitelisted(x,y,z) then
+        coroutine.yield(x,y,z)
+      end
+    end
+  end
+  local co = coroutine.create(skip_not_whitelisted)
+  return function()
+    if coroutine.status(co) ~= "dead" then
+      local status, x, y, z = coroutine.resume(co)
+      return x,y,z
+    end
+  end
+end
+
+function NBTbuilder:block_whitelisted(x,y,z)
+  assert(self.whitelist_initialized, "whitelist hasn't been initialized yet")
+  local block = self.blueprint:legacy_block_name(x,y,z)
+  return self.whitelist[block]
 end
 
 function NBTbuilder:get_dest()
@@ -125,6 +155,7 @@ end
 
 function NBTbuilder:add_to_whitelist(item_table)
   -- make a list of all matching items in inventory from blueprint
+  self.whitelist_initialized = true
   for k,v in pairs(item_table) do
     if v.name and v.name ~= "minecraft:air" and not self.whitelist[v.name] and self.legacy_ingredients[v.name] then
       self.whitelist[v.name] = true
@@ -202,23 +233,71 @@ function Refill:take_action()
   end
 end
 
-local function build(filename)
+function NBTbuilder:start()
   -- make sure if the type of item is included in the chest then all items of that type for the build are included
-  local builder, continue = NBTbuilder(filename), true
+  local continue = true
   while continue do
-    continue = builder:take_action()
+    continue = self:take_action()
   end
+end
+
+function NBTbuilder:refill()
+  self:returning(-1,-1,-1)
+  self.inventory:dump_in_chest(0)
+  local chest = self.inventory:scan_chest(0)
+  self:add_to_whitelist(chest)
+  
+  local vinv = VirtualInv(16)
+  for x,y,z in self:iterator(true) do
+    local block = self.blueprint:legacy_block_name(x,y,z)
+    if not vinv:insert(block,1) then
+      break
+    end
+  end
+  self.inventory:grab_goodies(0, chest, vinv)
+end
+
+function NBTbuilder:build()
+  self:refill()
+  for x,y,z in self:iterator() do
+    local block = self.blueprint:legacy_block_name(x,y,z)
+    local hasBlock, slot = self.inventory:find(block)
+    if not hasBlock then
+      self:refill()
+    end
+    self:go(x,y,z)
+    --print("placeDown " .. block)
+    r.select(slot)
+    r.placeDown(block)
+  end
+  self:returning(-1,-1,-1)
+end
+
+local function fill_virtual_chest(filename)
+  local blue = Blueprint.from_filename(filename)
+  local tIngr = blue:create_virtual_supply_chest()
+  local f = io.open("utils/virtual_chest.lua", "w")
+  f:write("virtual_chest = " .. table.tostring(tIngr))
+  f:close()
+end
+
+local function main(filename)
+  --fill_virtual_chest(filename)
+  local builder = NBTbuilder(filename)
+  builder:build()
 end
 
 local tArgs = {...}
 if #tArgs == 0 then
-  --print("Usage: NBTbuilder <filename>")
-  build("../schematics/MedivalStable1")
+  print("Usage: NBTbuilder <filename>\t - builds schematic")
+  print("       NBTbuilder -i <filename>\t - lists supplies needed")
 elseif #tArgs == 1 then
-  build(tArgs[1])
+  main(tArgs[1])
+elseif #tArgs == 2 and tArgs[1] == "-i" then
+  local builder = NBTbuilder(tArgs[2])
+  local ing = builder.blueprint:legacy_unique_ingredients()
+  save_table_as_tabulated_file(ing, "supplies")
+  os.execute("less supplies")
 end
-
-
-
 
 

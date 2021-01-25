@@ -50,6 +50,19 @@ function ZigZagIterator:clone()
   return ZigZagIterator(self)
 end
 
+function ZigZagIterator:__call()
+  local first, continue = true, true
+  return function()
+    if not first then
+      continue = self:next()
+    end
+    if continue then
+      first = false
+      return self.x,self.y,self.z
+    end
+  end
+end
+
 function ZigZagIterator:next()
   if self.x >= self.width and self.y >= self.height and self.z >= self.length then
     return false
