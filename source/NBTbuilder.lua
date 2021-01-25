@@ -6,7 +6,6 @@ require("blueprintClassic")
 require("ZigZagIterator")
 require("NBTparser")
 require("inventory")
-require("utils/virtual_chest")
 
 local legacy_dict = require("utils/legacy_string_dictionary")
 local r = require("robot")
@@ -23,8 +22,8 @@ function NBTbuilder:_init(filename)
   self.legacy_ingredients = self.blueprint:legacy_unique_ingredients()
   self.whitelist = {}
   self.whitelist_initialized = false
-  save_table_as_tabulated_file(self.blueprint:unique_ingredients(true), "ingredients")
-  self.state = Refill(self)
+  --save_table_as_tabulated_file(self.blueprint:unique_ingredients(true), "ingredients")
+  --self.state = Refill(self)
 end
 
 function NBTbuilder:next(whitelistMode)
@@ -288,15 +287,13 @@ local function main(filename)
 end
 
 local tArgs = {...}
-if #tArgs == 0 then
-  print("Usage: NBTbuilder <filename>\t - builds schematic")
-  print("       NBTbuilder -inv <filename>\t - lists supplies needed")
-  print("       NBTbuilder -db <filename>\t - /gives supplies needed")
-elseif #tArgs == 1 then
+tArgs[1] = "../schematics/Modern1"
+
+if #tArgs == 1 then
   main(tArgs[1])
 elseif #tArgs == 2 and tArgs[1] == "-inv" then
   local builder = NBTbuilder(tArgs[2])
-  local ing = builder.blueprint:legacy_unique_ingredients()
+  local ing = builder.blueprint:unique_ingredients()
   save_table_as_tabulated_file(ing, "supplies")
   os.execute("less supplies")
 elseif #tArgs == 2 and tArgs[1] == "-db" then
@@ -306,6 +303,10 @@ elseif #tArgs == 2 and tArgs[1] == "-db" then
     component.debug.runCommand(c)
     os.sleep(0.2)
   end
+else
+  print("Usage: NBTbuilder <filename>\t - builds schematic")
+  print("       NBTbuilder -inv <filename>\t - lists supplies needed")
+  print("       NBTbuilder -db <filename>\t - /gives supplies needed")
 end
 
 

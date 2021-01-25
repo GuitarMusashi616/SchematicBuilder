@@ -105,8 +105,12 @@ end
 function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
   extraSlots = extraSlots or 0
   local tIngr = self:legacy_unique_ingredients()
-  local length = table.len(tIngr)
-  local v_chest = VirtualInv(length+extraSlots)
+  local stacksNeeded = 0
+  for k,v in pairs(tIngr) do
+    stacksNeeded = stacksNeeded + math.ceil(v/64)
+  end
+  
+  local v_chest = VirtualInv(stacksNeeded+extraSlots)
   for k,v in pairs(tIngr) do
     if k ~= "minecraft:air" then
       v_chest:insert(k,v)
@@ -116,12 +120,12 @@ function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
 end
 
 function BlueprintClassic:create_virtual_supply_chest()
-  local v_chest = self:fill_virtual_inv_with_supplies(20)
+  local v_chest = self:fill_virtual_inv_with_supplies(30)
   return v_chest:convert_to_openCC_inv()
 end
 
 function BlueprintClassic:create_give_commands()
-  local v_chest = self:fill_virtual_inv_with_supplies()
+  local v_chest = self:fill_virtual_inv_with_supplies(30)
   local commands = {}
   for i,bucket in ipairs(v_chest.buckets) do
     if bucket.item ~= empty then

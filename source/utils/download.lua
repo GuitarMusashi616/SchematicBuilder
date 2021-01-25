@@ -8,13 +8,15 @@ local filesystem = require("filesystem")
 local files = {
   "gps",
   "blueprint",
+  "blueprintClassic",
   "inventory",
   "NBTparser",
   "NBTbuilder",
   "ZigZagIterator",
   "utils/class",
   "utils/tools",
-  "utils/legacy_id_dictionary",
+  "utils/legacy_string_dictionary",
+  "utils/classic_id_data_dictionary",
   "utils/download",
 }
 
@@ -34,8 +36,8 @@ else
   elseif #tArgs == 1 then
     if tArgs[1] == "-r" then
       os.execute("rm /build/utils/*")
-      os.execute("rm /build/*")
       os.execute("rmdir /build/utils")
+      os.execute("rm /build/*")
       os.execute("rmdir /build")
     else
       os.execute("wget " .. repository .. "schematics/" .. tArgs[1] .. " /build/" .. tArgs[1])
