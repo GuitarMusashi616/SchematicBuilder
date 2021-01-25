@@ -177,18 +177,39 @@ function Blueprint:find_next_occurence(name, iterator)
   end
 end
 
-function Blueprint:fill_virtual_inv_with_supplies(extraSlots)
-  return BlueprintClassic.fill_virtual_inv_with_supplies(self, extraSlots)
-end
-
-function Blueprint:create_virtual_supply_chest()
-  return BlueprintClassic.create_virtual_supply_chest(self)
-end
-
-function Blueprint:create_give_commands()
-  return BlueprintClassic.create_give_commands(self)
-end
+function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
+  extraSlots = extraSlots or 0
+  local tIngr = self:legacy_unique_ingredients()
+  local stacksNeeded = 0
+  for k,v in pairs(tIngr) do
+    stacksNeeded = stacksNeeded + math.ceil(v/64)
+  end
   
+  local v_chest = VirtualInv(stacksNeeded+extraSlots)
+  for k,v in pairs(tIngr) do
+    if k ~= "minecraft:air" then
+      v_chest:insert(k,v)
+    end
+  end
+  return v_chest
+end
+
+function BlueprintClassic:create_virtual_supply_chest()
+  local v_chest = self:fill_virtual_inv_with_supplies(30)
+  return v_chest:convert_to_openCC_inv()
+end
+
+function BlueprintClassic:create_give_commands()
+  local v_chest = self:fill_virtual_inv_with_supplies(30)
+  local commands = {}
+  for i,bucket in ipairs(v_chest.buckets) do
+    if bucket.item ~= "empty" then
+      commands[#commands+1] = "/give @p " .. tostring(bucket.item) .. " " .. tostring(bucket.count)
+    end
+  end
+  return commands
+end
+
 local function main()
   local parser = NBTparser("Medieval2")
   local blueprint = Blueprint(parser.data.Schematic)

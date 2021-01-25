@@ -128,7 +128,7 @@ function BlueprintClassic:create_give_commands()
   local v_chest = self:fill_virtual_inv_with_supplies(30)
   local commands = {}
   for i,bucket in ipairs(v_chest.buckets) do
-    if bucket.item ~= empty then
+    if bucket.item ~= "empty" then
       commands[#commands+1] = "/give @p " .. tostring(bucket.item) .. " " .. tostring(bucket.count)
     end
   end

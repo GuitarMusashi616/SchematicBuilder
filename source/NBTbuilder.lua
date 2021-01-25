@@ -267,7 +267,7 @@ function NBTbuilder:build()
     self:go(x,y,z)
     --print("placeDown " .. block)
     r.select(slot)
-    r.placeDown(block)
+    self:placeDown(block)
   end
   self:returning(-1,-1,-1)
 end
