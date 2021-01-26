@@ -6,6 +6,7 @@ require("NBTparser")
 require("utils/tools")
 require("utils/class")
 
+
 local legacy_dict = require("utils/legacy_string_dictionary")
 -- goal: print out the schematic arrangement of blocks
 -- from gps(0,0,0) find correct block to place - find Palette ID then match that ID with Block
@@ -177,7 +178,7 @@ function Blueprint:find_next_occurence(name, iterator)
   end
 end
 
-function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
+function Blueprint:fill_virtual_inv_with_supplies(extraSlots)
   extraSlots = extraSlots or 0
   local tIngr = self:legacy_unique_ingredients()
   local stacksNeeded = 0
@@ -194,12 +195,12 @@ function BlueprintClassic:fill_virtual_inv_with_supplies(extraSlots)
   return v_chest
 end
 
-function BlueprintClassic:create_virtual_supply_chest()
+function Blueprint:create_virtual_supply_chest()
   local v_chest = self:fill_virtual_inv_with_supplies(30)
   return v_chest:convert_to_openCC_inv()
 end
 
-function BlueprintClassic:create_give_commands()
+function Blueprint:create_give_commands()
   local v_chest = self:fill_virtual_inv_with_supplies(30)
   local commands = {}
   for i,bucket in ipairs(v_chest.buckets) do
