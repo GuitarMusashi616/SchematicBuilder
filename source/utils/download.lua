@@ -8,11 +8,13 @@ local filesystem = require("filesystem")
 local files = {
   "GPS",
   "Blueprint",
+  "BlueprintNew",
   "BlueprintClassic",
   "Machine",
   "NBTparser",
   "NBTbuilder",
   "ZigZagIterator",
+  "VirtualInv",
   "lib/oop",
   "lib/tools",
   "data/new_id_to_label",

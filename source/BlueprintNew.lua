@@ -57,7 +57,8 @@ function BlueprintNew:get_label(x,y,z)
   local pn = self:palette_name(bd)
   local no_meta_pn = self:remove_suffix_metadata_from_palette_name(pn)
   local label = new_id_to_label[no_meta_pn]
-  return assert(label, tostring(pn) .. " does not have label")
+  assert(label, tostring(pn) .. " does not have label")
+  return label
 end
 
 
@@ -75,10 +76,6 @@ function BlueprintNew:get_metadata(x,y,z)
     metadata[var] = val
   end
   return metadata
-end
-
-function BlueprintNew:get_width_height_length()
-  return self.width, self.height, self.length
 end
 
 function BlueprintNew:get_wrench_clicks(x,y,z)

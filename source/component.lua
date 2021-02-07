@@ -6,6 +6,15 @@ component.computer = {}
 component.robot = {}
 component.inventory_controller = {}
 component.generator = {}
+component.debug = {}
+
+component.debug.runCommand = function(command)
+  if command:sub(1,5) == "/give" then
+    print("given " ..command:sub(7).. " to GuitarMusashi616")
+  else
+    print(command)
+  end
+end
 
 component.inventory_controller.getAllStacks = function(side)
   return {["count"]=function() return 3 end, ["getAll"]=function() return SimInv().chest end, ["reset"]=function() return end}
