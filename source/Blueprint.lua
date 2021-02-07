@@ -1,6 +1,4 @@
 local oop = require "lib/oop"
-local tools = require "lib/tools"
-
 local class = oop.class
 
 local Blueprint = class()

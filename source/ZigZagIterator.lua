@@ -1,8 +1,6 @@
 --zig zag iterator
 
 local oop = require "lib/oop"
-local tools = require "lib/tools"
-
 local class = oop.class
 
 local ZigZagIterator = class()

@@ -5,7 +5,6 @@
 -- make it so that u can either fill the inv of the robot or put a chest under it and put things in its inventory
 
 local oop = require "lib/oop"
-local tools = require "lib/tools"
 
 local ZigZagIterator = require "ZigZagIterator"
 local BlueprintNew = require "BlueprintNew" -- make it so it's automatic whether u get a blueprint or blueprintClassic

@@ -6,17 +6,17 @@
 
 local filesystem = require("filesystem")
 local files = {
-  "gps",
-  "blueprint",
-  "blueprintClassic",
-  "inventory",
+  "GPS",
+  "Blueprint",
+  "BlueprintClassic",
+  "Machine",
   "NBTparser",
   "NBTbuilder",
   "ZigZagIterator",
-  "utils/class",
-  "utils/tools",
-  "utils/legacy_string_dictionary",
-  "utils/classic_id_data_dictionary",
+  "lib/oop",
+  "lib/tools",
+  "data/new_id_to_label",
+  "data/classic_id_data_dictionary",
   "utils/download",
 }
 
@@ -26,6 +26,8 @@ local tArgs = {...}
 if not filesystem.exists("/build") then
   os.execute("mkdir /build")
   os.execute("mkdir /build/utils")
+  os.execute("mkdir /build/lib")
+  os.execute("mkdir /build/data")
   for _,file in ipairs(files) do
     os.execute("wget " .. repository .."source/".. file..".lua " .. "/build/" .. file ..".lua")
   end
@@ -37,6 +39,10 @@ else
     if tArgs[1] == "-r" then
       os.execute("rm /build/utils/*")
       os.execute("rmdir /build/utils")
+      os.execute("rm /build/lib/*")
+      os.execute("rmdir /build/lib")
+      os.execute("rm /build/data/*")
+      os.execute("rmdir /build/data")
       os.execute("rm /build/*")
       os.execute("rmdir /build")
     else
