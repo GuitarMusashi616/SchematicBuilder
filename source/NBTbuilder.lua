@@ -52,7 +52,7 @@ local function build(filename)
     gps:go(x,y,z)
     local success = Machine():placeDown(label, r, u)
     while not success do
-      gps:go(-1,-1,0)
+      gps:returning(-1,-1,0)
       refill(iter:clone(), blueprint)
       gps:go(x,y,z)
       success = Machine():placeDown(label, r, u)
