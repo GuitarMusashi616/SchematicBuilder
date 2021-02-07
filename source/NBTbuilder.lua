@@ -101,4 +101,44 @@ local function main()
   end
 end
 
-build(...)
+local function next_16_stacks(iter, blueprint)
+  -- moves iter forward
+  local vinv = VirtualInv(16)
+  
+  local has_space = true
+  for x,y,z in iter() do
+    local label = blueprint:get_label(x,y,z)
+    if label ~= "Air" then
+      if not vinv:insert(label) then
+        return vinv, false
+      end
+    end
+  end
+  
+  return vinv, true
+end
+
+
+local function iter_all_refills(blueprint)
+  local iter = ZigZagIterator(blueprint:get_width_height_length())
+  local continue = true
+  return function()
+    if not continue then
+      return
+    end
+    local vinv, last_stack = next_16_stacks(iter, blueprint)
+    if last_stack then
+      continue = false
+    end
+    return vinv
+  end
+end
+
+for vinv in iter_all_refills(get_blueprint(...)) do
+  --print(table.tostring(vinv).."\n")
+  Machine():grab_stuff(vinv)
+  for i=1,16 do
+    r.select(i)
+    r.drop()
+  end
+end
