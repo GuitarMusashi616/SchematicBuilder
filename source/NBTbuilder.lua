@@ -13,7 +13,8 @@ local NBTparser = require "NBTparser"
 local Machine = require "Machine"
 local GPS = require "GPS"
 local VirtualInv = require "VirtualInv"
-
+local SimInv = require "utils/SimulatedInventory"
+local table = require "lib/table"
 
 local function get_blueprint(filename)
   local parser = NBTparser(filename)
@@ -26,7 +27,6 @@ local function get_blueprint(filename)
   end
 end
 
-
 local function refill(iter_copy, blueprint)
   local vinv = VirtualInv(16)
   
@@ -36,26 +36,58 @@ local function refill(iter_copy, blueprint)
       vinv:insert(label)
     end
   end
-  
   Machine():grab_stuff(vinv) -- depends on the robot (could be OpenComputers or ComputerCraft) (holds forever if not there) (try adding to library)
+  
 end
+
+local function init_sim(blueprint)
+  SimInv().chest = {}
+  SimInv().inv = {}
+  
+  local vinv = VirtualInv(120)
+  for x,y,z in ZigZagIterator(blueprint:get_width_height_length())() do
+    local label = blueprint:get_label(x,y,z)
+    if label ~= "Air" then
+      vinv:insert(label)
+    end
+  end
+  
+  
+  for i,bucket in ipairs(vinv.buckets) do
+    if bucket.item == "empty" then
+      bucket.item = "Air"
+    end
+    
+    SimInv().chest[i] = {label=bucket.item, size=bucket.count, maxSize=64}
+  end
+  
+  for i=1,16 do
+    SimInv().inv[i] = {label="Grass Block", size=64, maxSize=64}
+  end
+end
+
 
 
 local function build(filename)
   local blueprint = get_blueprint(filename)
+  init_sim(blueprint)
   local iter = ZigZagIterator(blueprint:get_width_height_length())
   local gps = GPS(-1,-1,0)
+  --local machine = Machine()
   
   for x,y,z in iter() do
     local label = blueprint:get_label(x,y,z)
     local r,u = blueprint:get_wrench_clicks(x,y,z)
-    gps:go(x,y,z)
-    local success = Machine():placeDown(label, r, u)
-    while not success do
-      gps:returning(-1,-1,0)
-      refill(iter:clone(), blueprint)
+    if label ~= "Air" then
       gps:go(x,y,z)
-      success = Machine():placeDown(label, r, u)
+      local success = Machine():placeDown(label, r, u)
+      
+      while not success do
+        gps:returning(-1,-1,0)
+        refill(iter:clone(), blueprint)
+        gps:go(x,y,z)
+        success = Machine():placeDown(label, r, u)
+      end
     end
   end
 end
@@ -70,4 +102,4 @@ local function main()
   end
 end
 
-build(...)
+build("../Schematics/MedivalStable1")

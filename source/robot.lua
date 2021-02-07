@@ -41,7 +41,7 @@ end
 
 function r.placeDown()
   if SimInv().inv[r.selectedSlot].size > 0 then
-    print(string.format("placeDown %s", SimInv().inv[r.selectedSlot].name))
+    print(string.format("placeDown %s", SimInv().inv[r.selectedSlot].label))
     SimInv().inv[r.selectedSlot].size = SimInv().inv[r.selectedSlot].size - 1
     if SimInv().inv[r.selectedSlot].size <= 0 then
       SimInv().inv[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
@@ -65,7 +65,7 @@ end
 
 function r.find_empty_slot(chest)
   for i,v in ipairs(chest) do
-    if v.name and v.name == "minecraft:air" then
+    if v.name and v.name == "minecraft:air" or v.label == "Air" then
       return i
     end
   end

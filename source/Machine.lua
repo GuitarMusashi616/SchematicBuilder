@@ -29,6 +29,7 @@ end
 
 function Machine:dump()
   for i in cycle(r.select(), 16) do
+    r.select(i)
     r.dropDown()
   end
 end

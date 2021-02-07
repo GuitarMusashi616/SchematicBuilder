@@ -40,7 +40,7 @@ component.inventory_controller.suckFromSlot = function(side, slot, count)
   --WIP have to make this actually work later
   local inv_slot = r.find_empty_slot(SimInv().inv)
   if inv_slot then
-    print(string.format("sucking %d %s from slot %s", count, SimInv().chest[slot].name, slot) )
+    print(string.format("sucking %d %s from slot %s", count, SimInv().chest[slot].label, slot) )
     SimInv().inv[inv_slot] = table.copy(SimInv().chest[slot])
     SimInv().inv[inv_slot].size = count
     SimInv().chest[slot].size = SimInv().chest[slot].size - count
