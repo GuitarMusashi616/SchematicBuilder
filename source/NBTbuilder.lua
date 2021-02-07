@@ -13,7 +13,6 @@ local NBTparser = require "NBTparser"
 local Machine = require "Machine"
 local GPS = require "GPS"
 local VirtualInv = require "VirtualInv"
-local SimInv = require "utils/SimulatedInventory"
 local table = require "lib/table"
 
 local function get_blueprint(filename)
@@ -70,7 +69,7 @@ end
 
 local function build(filename)
   local blueprint = get_blueprint(filename)
-  init_sim(blueprint)
+  --init_sim(blueprint)
   local iter = ZigZagIterator(blueprint:get_width_height_length())
   local gps = GPS(-1,-1,0)
   --local machine = Machine()
@@ -102,4 +101,4 @@ local function main()
   end
 end
 
-build("../Schematics/MedivalStable1")
+build(...)
