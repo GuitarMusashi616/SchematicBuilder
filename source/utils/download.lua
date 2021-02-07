@@ -17,6 +17,7 @@ local files = {
   "VirtualInv",
   "lib/oop",
   "lib/tools",
+  "lib/table",
   "data/new_id_to_label",
   "data/classic_id_data_dictionary",
   "utils/download",
