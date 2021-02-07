@@ -26,16 +26,16 @@ local function get_blueprint(filename)
   end
 end
 
-local function refill(iter_copy, blueprint)
+local function refill(iter_copy, blueprint, blacklist)
   local vinv = VirtualInv(16)
   
   for x,y,z in iter_copy() do
     local label = blueprint:get_label(x,y,z)
-    if label ~= "Air" then
+    if not blacklist[label] then
       vinv:insert(label)
     end
   end
-  Machine():grab_stuff(vinv) -- depends on the robot (could be OpenComputers or ComputerCraft) (holds forever if not there) (try adding to library)
+  Machine():grab_stuff(vinv, blacklist) -- depends on the robot (could be OpenComputers or ComputerCraft) (holds forever if not there) (try adding to library)
   
 end
 
@@ -72,18 +72,19 @@ local function build(filename)
   --init_sim(blueprint)
   local iter = ZigZagIterator(blueprint:get_width_height_length())
   local gps = GPS(-1,-1,0)
+  local blacklist = {Air=true}
   --local machine = Machine()
   
   for x,y,z in iter() do
     local label = blueprint:get_label(x,y,z)
     local r,u = blueprint:get_wrench_clicks(x,y,z)
-    if label ~= "Air" then
+    if not blacklist[label] then
       gps:go(x,y,z)
       local success = Machine():placeDown(label, r, u)
       
       while not success do
         gps:returning(-1,-1,0)
-        refill(iter:clone(), blueprint)
+        refill(iter:clone(), blueprint, blacklist)
         gps:go(x,y,z)
         success = Machine():placeDown(label, r, u)
       end
@@ -134,11 +135,15 @@ local function iter_all_refills(blueprint)
   end
 end
 
-for vinv in iter_all_refills(get_blueprint(...)) do
-  --print(table.tostring(vinv).."\n")
-  Machine():grab_stuff(vinv)
-  for i=1,16 do
-    r.select(i)
-    r.drop()
+local function check_if_schem_labels_match_in_game_labels()
+  for vinv in iter_all_refills(get_blueprint("../schematics/Modern1")) do
+    --print(table.tostring(vinv).."\n")
+    Machine():grab_stuff(vinv, true)
+    for i=1,16 do
+      r.select(i)
+      r.drop()
+    end
   end
 end
+
+build(...)

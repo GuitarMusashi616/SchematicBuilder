@@ -34,7 +34,7 @@ function Machine:dump()
   end
 end
 
-function Machine:grab_stuff(vinv)
+function Machine:grab_stuff(vinv, blacklist)
   -- look at all nearby inventories
   -- grab each stack from vinv
   -- wait for a button press if it can't find the current stack
@@ -57,7 +57,8 @@ function Machine:grab_stuff(vinv)
       end
     end
     if bucket.count > 0 then
-      self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
+      blacklist[bucket.item] = true
+      --self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
     end
   end
 end
