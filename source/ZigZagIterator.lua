@@ -1,16 +1,18 @@
 --zig zag iterator
 
-require("utils/class")
-require("utils/tools")
+local oop = require "lib/oop"
+local tools = require "lib/tools"
 
-ZigZagIterator = class()
+local class = oop.class
 
-function ZigZagIterator:_init(height, length, width, y, z, x)
+local ZigZagIterator = class()
+
+function ZigZagIterator:_init(xmax, ymax, zmax, x, y, z)
   --width, height, length should match the Schematic.Width, Schematic.Height, Schematic.Length
   --goes from 0,0,0 to height-1, width-1, length-1
-  if type(height) == "table" and height.is_a[ZigZagIterator] and not length and not width then
+  if type(xmax) == "table" and xmax.is_a[ZigZagIterator] and not ymax and not zmax then
     --clone
-    zzi = height
+    zzi = xmax
     self.width = zzi.width
     self.height = zzi.height
     self.length = zzi.length
@@ -31,14 +33,14 @@ function ZigZagIterator:_init(height, length, width, y, z, x)
     return
   end
   
-  assert(width and type(width) == "number")
-  assert(height and type(height) == "number")
-  assert(length and type(length) == "number")
+  assert(xmax and type(xmax) == "number", "missing args")
+  assert(ymax and type(ymax) == "number", "missing args")
+  assert(zmax and type(zmax) == "number", "missing args")
   
-  self.width = width-1
-  self.height = height-1
-  self.length = length-1
-  
+  self.width = xmax-1
+  self.height = ymax-1
+  self.length = zmax-1
+
   self.x = x or 0
   self.y = y or 0
   self.z = z or 0
@@ -49,6 +51,7 @@ end
 function ZigZagIterator:clone()
   return ZigZagIterator(self)
 end
+
 
 function ZigZagIterator:__call()
   local first, continue = true, true
@@ -62,6 +65,16 @@ function ZigZagIterator:__call()
     end
   end
 end
+
+--[[
+function ZigZagIterator:__call()
+  if self:next() then
+    return self.x, self.y, self.z
+  else
+    return
+  end
+end
+]]
 
 function ZigZagIterator:next()
   if self.x >= self.width and self.y >= self.height and self.z >= self.length then
@@ -170,3 +183,5 @@ local function test_iter()
     print()
   end
 end
+
+return ZigZagIterator

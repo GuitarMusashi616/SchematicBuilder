@@ -1,8 +1,8 @@
 local r = {}
+local SimInv = require "utils/SimulatedInventory"
+local table = require "lib/table"
 
 r.selectedSlot = 1
-require("utils/virtual_chest")
-require("utils/virtual_robot_inventory")
 
 function r.up()
   print("up")
@@ -29,18 +29,25 @@ function r.turnLeft()
 end
 
 function r.place()
-  print(string.format("place %s", virtual_robot_inventory[r.selectedSlot].label))
+  print(string.format("place %s", SimInv().inv[r.selectedSlot].label))
+end
+
+function r.select(i)
+  if i then
+    r.selectedSlot = i
+  end
+  return r.selectedSlot
 end
 
 function r.placeDown()
-  if virtual_robot_inventory[r.selectedSlot].size > 0 then
-    print(string.format("placeDown %s", virtual_robot_inventory[r.selectedSlot].name))
-    virtual_robot_inventory[r.selectedSlot].size = virtual_robot_inventory[r.selectedSlot].size - 1
-    if virtual_robot_inventory[r.selectedSlot].size <= 0 then
-      virtual_robot_inventory[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
+  if SimInv().inv[r.selectedSlot].size > 0 then
+    print(string.format("placeDown %s", SimInv().inv[r.selectedSlot].name))
+    SimInv().inv[r.selectedSlot].size = SimInv().inv[r.selectedSlot].size - 1
+    if SimInv().inv[r.selectedSlot].size <= 0 then
+      SimInv().inv[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
     end
   else
-    print(string.format("cannot placeDown, out of %s", virtual_robot_inventory[r.selectedSlot].label))
+    print(string.format("cannot placeDown, out of %s", SimInv().inv[r.selectedSlot].label))
   end
 end
 
@@ -54,10 +61,6 @@ end
 
 function r.detectUp()
   return r.detect()
-end
-
-function r.select(slot)
-  r.selectedSlot = slot
 end
 
 function r.find_empty_slot(chest)
@@ -77,10 +80,10 @@ end
 function r.drop(count)
   --all of selectedSlot goes into chest 
   --returns true if any of selected slot goes into chest
-  local slot = r.find_empty_slot(virtual_chest)
+  local slot = r.find_empty_slot(SimInv().chest)
   if slot then
-    virtual_chest[slot] = table.copy(virtual_robot_inventory[r.selectedSlot])
-    virtual_robot_inventory[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
+    SimInv().chest[slot] = table.copy(SimInv().inv[r.selectedSlot])
+    SimInv().inv[r.selectedSlot] = {maxSize=64,name="minecraft:air",label="Air",maxDamage=0,hasTag=false,damage=0,size=0}
     return true
   else
     return false

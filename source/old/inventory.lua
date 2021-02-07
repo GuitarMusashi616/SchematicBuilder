@@ -1,5 +1,7 @@
-require("utils/class")
-require("ZigZagIterator")
+local oop = require("lib/oop")
+local ZigZagIterator = require("ZigZagIterator")
+local class = oop.class
+
 
 local legacy_dict = require("utils/legacy_string_dictionary")
 local r = require("robot")
@@ -7,7 +9,7 @@ local component = require("component")
 local inv = component.inventory_controller
 
 
-Inventory = class()
+local Inventory = class()
 
 function Inventory:_init()
   self.is_holding_wrench = self:is_wrench_equipped()
@@ -92,6 +94,7 @@ end
 VirtualInv = class()
 
 function VirtualInv:_init(slots)
+  assert(slots, "must specify number of slots in virtual inventory")
   self.slots = slots
   self.buckets = {}
   for i=1,slots do
@@ -100,7 +103,8 @@ function VirtualInv:_init(slots)
 end
 
 function VirtualInv:insert(item, count)
-  assert(item and count, "must include name and count")
+  assert(item, "must include name of item")
+  count = count or 1
   local remaining = count
   -- fill matching buckets
   remaining = self:fill_matching_slots(item, remaining)
@@ -215,3 +219,5 @@ local function test_virtual_inv()
   print(vinv:insert("minecraft:dirt", 40))
   print(vinv:insert("minecraft:grass",5000))
 end
+
+return Inventory

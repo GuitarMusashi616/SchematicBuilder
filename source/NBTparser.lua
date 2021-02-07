@@ -1,5 +1,6 @@
-require("utils/class")
-require("utils/tools")
+local oop = require("lib/oop")
+local tools = require("lib/tools")
+local class = oop.class
 
 NBTparser = class()
 
@@ -171,3 +172,5 @@ local function main()
   local parser = NBTparser("../schematics/medieval-tower")
   print()
 end
+
+return NBTparser

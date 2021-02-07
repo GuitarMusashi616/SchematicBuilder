@@ -1,9 +1,10 @@
 local r = require("robot")
-require("utils/class")
+local oop = require("lib/oop")
+local class = oop.class
 
-GPS = class()
+local GPS = class()
 
-function GPS:_init(x,y,z,facing)
+function GPS:_init(x,y,z)
   self.x = x or 0
   self.y = y or 0
   self.z = z or 0
@@ -175,3 +176,5 @@ local function test_GPS()
   gps:go_x(7)
   gps:go(0,0,0)
 end
+
+return GPS
