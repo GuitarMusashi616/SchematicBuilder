@@ -120,7 +120,7 @@ function Machine:get_blacklist(blueprint)
   -- iterate through each slot in chest
   -- create chest_dict[label] = count
   for _,v in ipairs(chest) do
-    if not chest_dict[v.label] then
+    if v and not chest_dict[v.label] then
       chest_dict[v.label] = 0
     end
     chest_dict[v.label] = chest_dict[v.label] + v.size
