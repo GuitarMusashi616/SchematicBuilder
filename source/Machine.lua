@@ -158,7 +158,7 @@ function Machine:get_blacklist(blueprint)
   for k in pairs(blacklist) do
     print(k)
   end
-  self:press_any_key_to_continue()
+  --self:press_any_key_to_continue()
 
   -- return blacklist
   return blacklist

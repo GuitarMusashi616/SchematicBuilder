@@ -148,4 +148,4 @@ local function check_if_schem_labels_match_in_game_labels()
   end
 end
 
-build(...)
+build "../schematics/Medieval2"

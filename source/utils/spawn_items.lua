@@ -13,6 +13,9 @@ local function main()
   local vinv = VirtualInv(100)
   for x,y,z in ZigZagIterator(blueprint:get_width_height_length())() do
     local label = blueprint:get_label(x,y,z)
+    print(x,y,z)
+    print(blueprint:palette_name(blueprint:block_data(x,y,z)))
+    print(label)
     if label ~= "Air" then
       vinv:insert(label)
     end
