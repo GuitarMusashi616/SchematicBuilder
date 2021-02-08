@@ -1,16 +1,16 @@
 local oop = require "lib/oop"
-local singleton = oop.singleton
+local class = oop.class
 local component = require "component"
 local inv = component.inventory_controller
 local r = require "robot"
 
 local VirtualInv = require "VirtualInv"
 
-local Machine = singleton() -- this one is for robot but might make a parent factory class that returns a class for turtle 
+local Machine = class() -- this one is for robot but might make a parent factory class that returns a class for turtle 
 
---[[function Machine:_init()
-  self.is_holding_wrench = false
-end]]
+function Machine:_init()
+  self.chest = self:update_chest()
+end
 
 local function cycle(start, max)
   -- 5,16 -> 5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4
@@ -34,16 +34,19 @@ function Machine:dump()
   end
 end
 
-function Machine:grab_stuff(vinv, blacklist)
+function Machine:update_chest()
+  self:dump()
+  return inv.getAllStacks(0):getAll()
+end
+
+function Machine:grab_stuff(vinv)
   -- look at all nearby inventories
   -- grab each stack from vinv
   -- wait for a button press if it can't find the current stack
-  assert(#vinv.buckets <= 16, "vinv cannot have more slots than robot inventory")
-  
   self:dump()
-  local chest = inv.getAllStacks(0):getAll()
+  assert(#vinv.buckets <= 16, "vinv cannot have more slots than robot inventory")
   for slot, bucket in ipairs(vinv.buckets) do
-    for i, contents in ipairs(chest) do
+    for i, contents in ipairs(self.chest) do
       -- USES LABEL IMPORTANT
       if bucket.item == contents.label and bucket.count > 0 then
         local amount_received = inv.suckFromSlot(0, i, bucket.count)
@@ -57,8 +60,7 @@ function Machine:grab_stuff(vinv, blacklist)
       end
     end
     if bucket.count > 0 then
-      blacklist[bucket.item] = true
-      --self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
+      self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
     end
   end
 end
@@ -115,13 +117,11 @@ function Machine:placeDown(label, no_block_underneath_wrench_clicks, block_under
 end
 
 function Machine:get_blacklist(blueprint)
-  self:dump()
-  local refill_chest = inv.getAllStacks(0):getAll()
   local chest_dict = {}
   
-  -- iterate through each slot in refill_chest
+  -- iterate through each slot in chest
   -- create chest_dict[label] = count
-  for _,v in ipairs(refill_chest) do
+  for _,v in ipairs(self.chest) do
     if v and not chest_dict[v.label] then
       chest_dict[v.label] = 0
     end

@@ -35,8 +35,7 @@ local function refill(iter_copy, blueprint, blacklist)
       vinv:insert(label)
     end
   end
-  Machine():grab_stuff(vinv, blacklist) -- depends on the robot (could be OpenComputers or ComputerCraft) (holds forever if not there) (try adding to library)
-  return blacklist
+  return vinv -- depends on the robot (could be OpenComputers or ComputerCraft) (holds forever if not there) (try adding to library)
 end
 
 local function init_sim(blueprint)
@@ -72,18 +71,23 @@ local function build(filename)
   --init_sim(blueprint)
   local iter = ZigZagIterator(blueprint:get_width_height_length())
   local gps = GPS(-1,-1,0)
-  local blacklist = refill(iter:clone(), blueprint, {Air=true})
+  local machine = Machine()
+  
+  local blacklist = machine:get_blacklist(blueprint)
+  local vinv = refill(iter:clone(), blueprint, blacklist)
+  machine:grab_stuff(vinv)
   
   for x,y,z in iter() do
     local label = blueprint:get_label(x,y,z)
     local no_block_under_clicks, block_under_clicks = blueprint:get_wrench_clicks(x,y,z)
     if not blacklist[label] then
       gps:go(x,y,z)
-      local success = Machine():placeDown(label, no_block_under_clicks, block_under_clicks)
+      local success = machine:placeDown(label, no_block_under_clicks, block_under_clicks)
       
       if not success then
         gps:returning(-1,-1,0)
-        blacklist = refill(iter:clone(), blueprint, blacklist)
+        vinv = refill(iter:clone(), blueprint, blacklist)
+        machine:grab_stuff(vinv)
         gps:go(x,y,z)
       end
     end
