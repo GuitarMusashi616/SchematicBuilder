@@ -85,24 +85,25 @@ end
 
 function Machine:block_underneath()
   local block_underneath
-  if upside_down_wrench_clicks then
-    r.down()
-    block_underneath = r.detectDown()
-    r.up()
-  end
+  r.down()
+  block_underneath = r.detectDown()
+  r.up()
   return block_underneath
 end
 
-function Machine:placeDown(label, wrench_clicks, upside_down_wrench_clicks)
-  wrench_clicks = wrench_clicks or 0
-  
-  if upside_down_wrench_clicks then
-    if not self:block_underneath() then
-      wrench_clicks = upside_down_wrench_clicks
+function Machine:placeDown(label, no_block_underneath_wrench_clicks, block_underneath_wrench_clicks)
+  local wrench_clicks = 0
+  if no_block_underneath_wrench_clicks and block_underneath_wrench_clicks then
+    if self:block_underneath() then
+      wrench_clicks = block_underneath_wrench_clicks
+    else
+      wrench_clicks = no_block_underneath_wrench_clicks
     end
+  elseif no_block_underneath_wrench_clicks then
+    wrench_clicks = no_block_underneath_wrench_clicks
   end
-  -- use only wrench_clicks var now
   
+  -- use only wrench_clicks var now
   local is_found = self:select(label)
   if is_found then
     r.placeDown()

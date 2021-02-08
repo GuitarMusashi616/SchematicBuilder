@@ -84,15 +84,15 @@ function BlueprintNew:get_wrench_clicks(x,y,z)
   
   if metadata["facing"] and metadata["half"] then
     -- is stairs
-    local rightside_up = self:orient(
+    local block_underneath = self:orient(
       {"north_bottom","south_bottom","west_top","east_top", "north_top","south_top","west_bottom","east_bottom"}, 
       metadata["facing"].."_"..metadata["half"]
     )
-    local upside_down = self:orient(
+    local no_block_underneath = self:orient(
       {"north_top","south_top","west_bottom","east_bottom","north_bottom", "south_bottom","west_top","east_top"},
       metadata["facing"].."_"..metadata["half"]
     )
-    return rightside_up, upside_down
+    return no_block_underneath, block_underneath
   end
   
   if metadata["facing"] then
@@ -105,9 +105,9 @@ function BlueprintNew:get_wrench_clicks(x,y,z)
     if metadata["type"] == "double" then
       metadata["type"] = "bottom"
     end
-    local rightside_up = self:orient({"bottom", "top"}, metadata["type"])
-    local upside_down = self:orient({"top", "bottom"}, metadata["type"])
-    return rightside_up, upside_down
+    local block_underneath = self:orient({"bottom", "top"}, metadata["type"])
+    local no_block_underneath = self:orient({"top", "bottom"}, metadata["type"])
+    return no_block_underneath, block_underneath
   end
   
   if metadata["axis"] then

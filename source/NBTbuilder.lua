@@ -76,10 +76,10 @@ local function build(filename)
   
   for x,y,z in iter() do
     local label = blueprint:get_label(x,y,z)
-    local r,u = blueprint:get_wrench_clicks(x,y,z)
+    local no_block_under_clicks, block_under_clicks = blueprint:get_wrench_clicks(x,y,z)
     if not blacklist[label] then
       gps:go(x,y,z)
-      local success = Machine():placeDown(label, r, u)
+      local success = Machine():placeDown(label, no_block_under_clicks, block_under_clicks)
       
       if not success then
         gps:returning(-1,-1,0)
