@@ -72,14 +72,15 @@ local function build(filename)
   --init_sim(blueprint)
   local iter = ZigZagIterator(blueprint:get_width_height_length())
   local gps = GPS(-1,-1,0)
-  local blacklist = Machine():get_blacklist(blueprint)
+  local machine = Machine()
+  local blacklist = machine:get_blacklist(blueprint)
   
   for x,y,z in iter() do
     local label = blueprint:get_label(x,y,z)
     local r,u = blueprint:get_wrench_clicks(x,y,z)
     if not blacklist[label] then
       gps:go(x,y,z)
-      local success = Machine():placeDown(label, r, u)
+      local success = machine:placeDown(label, r, u)
       
       if not success then
         gps:returning(-1,-1,0)

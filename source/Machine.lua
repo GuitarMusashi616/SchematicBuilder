@@ -114,12 +114,12 @@ end
 
 function Machine:get_blacklist(blueprint)
   self:dump()
-  local chest = inv.getAllStacks(0):getAll()
+  local refill_chest = inv.getAllStacks(0):getAll()
   local chest_dict = {}
   
-  -- iterate through each slot in chest
+  -- iterate through each slot in refill_chest
   -- create chest_dict[label] = count
-  for _,v in ipairs(chest) do
+  for _,v in ipairs(refill_chest) do
     if v and not chest_dict[v.label] then
       chest_dict[v.label] = 0
     end
