@@ -14,7 +14,7 @@ local BlueprintNew = class(Blueprint)
 function BlueprintNew:_init(NBTschematic)
   --takes the NBTparser.data as an argument
   Blueprint._init(self, NBTschematic)
-  self.block_data_to_palette_name = self:get_block_data_to_palette_dict(NBTschematic.Palette)
+  self.block_data_to_palette_name = self:get_block_data_to_palette_dict(self.schematic.Palette)
 end
 
 function BlueprintNew:get_block_data_to_palette_dict(palette)

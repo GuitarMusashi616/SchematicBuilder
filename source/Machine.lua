@@ -34,7 +34,7 @@ function Machine:dump()
   end
 end
 
-function Machine:grab_stuff(vinv, blacklist)
+function Machine:grab_stuff(vinv)
   -- look at all nearby inventories
   -- grab each stack from vinv
   -- wait for a button press if it can't find the current stack
@@ -57,13 +57,13 @@ function Machine:grab_stuff(vinv, blacklist)
       end
     end
     if bucket.count > 0 then
-      blacklist[bucket.item] = true
-      --self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
+      self:press_any_key_to_continue("Add " .. tostring(bucket.count) .. " " ..tostring(bucket.item) .. " to robot inventory")
     end
   end
 end
 
 function Machine:press_any_key_to_continue(message)
+  message = message or ""
   print(message)
   print("Press any key to continue")
   while true do
@@ -110,6 +110,56 @@ function Machine:placeDown(label, wrench_clicks, upside_down_wrench_clicks)
     end
     return true
   end
+end
+
+function Machine:get_blacklist(blueprint)
+  self:dump()
+  local chest = inv:getAllStacks(0):getAll()
+  local chest_dict = {}
+  
+  -- iterate through each slot in chest
+  -- create chest_dict[label] = count
+  for _,v in ipairs(chest) do
+    if not chest_dict[v.label] then
+      chest_dict[v.label] = 0
+    end
+    chest_dict[v.label] = chest_dict[v.label] + v.size
+  end
+
+  -- iterate through each label in blueprint build
+  -- create blue_dict[label] = count
+  local xmax, ymax, zmax = blueprint:get_width_height_length()
+  local blue_dict = {}
+  
+  for y = 0,ymax-1 do
+    for z = 0,zmax-1 do
+      for x = 0,xmax-1 do
+        local label = blueprint:get_label(x,y,z)
+        if not blue_dict[label] then
+          blue_dict[label] = 0
+        end
+        blue_dict[label] = blue_dict[label] + 1
+      end
+    end
+  end
+  
+  -- for label, count in pairs(blue_dict) do
+  -- if theres not at least count label in chest_dict then
+  -- add label to blacklist
+  local blacklist = {}
+  for label, count in pairs(blue_dict) do
+    if not chest_dict[label] or chest_dict[label] < blue_dict[label] then
+      blacklist[label] = true
+    end
+  end
+  
+  for k in pairs(blacklist) do
+    print(k)
+  end
+  self:press_any_key_to_continue()
+
+  -- return blacklist
+  return blacklist
 end
 
 local function main()

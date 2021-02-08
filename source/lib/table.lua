@@ -21,6 +21,25 @@ function table.copy(t)
   return copy
 end
 
+function table.equal(t,u)
+  assert(type(t) == "table" and type(u) == "table", "table expected, got "..type(t).." and "..type(u))
+  if table.len(t) ~= table.len(u) then
+    return false
+  end
+  for k,_ in pairs(t) do
+    if type(t[k]) == "table" and type(u[k]) == "table" then
+      if not table.equal(t[k], u[k]) then
+        return false
+      end
+    else
+      if t[k] ~= u[k] then
+        return false
+      end
+    end
+  end
+  return true
+end
+
 function table.val_to_str( v )
   if "string" == type( v ) then
     v = string.gsub( v, "\n", "\\n" )
@@ -55,6 +74,10 @@ function table.tostring( tbl )
     end
   end
   return "{" .. table.concat( result, "," ) .. "}"
+end
+
+function table.print( tbl )
+  print(table.tostring(tbl))
 end
 
 return table
