@@ -114,7 +114,7 @@ end
 
 function Machine:get_blacklist(blueprint)
   self:dump()
-  local chest = inv:getAllStacks(0):getAll()
+  local chest = inv.getAllStacks(0):getAll()
   local chest_dict = {}
   
   -- iterate through each slot in chest
